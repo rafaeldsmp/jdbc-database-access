@@ -1,0 +1,72 @@
+package db;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Properties;
+
+public class DB {
+
+	private static Connection conn = null;
+
+	public static Connection getConnetion() {
+		if (conn == null) {
+			try {
+				Properties props = loadProperties();
+				String url = props.getProperty("dburl"); 
+				conn = DriverManager.getConnection(url, props);
+			} catch (SQLException e) {
+				throw new DbException(e.getMessage());
+			}	
+
+		}
+		return conn;
+	}
+	
+	public static void closeConnection() {
+		if(conn != null) {
+			try {
+				conn.close();
+			}
+			catch (Exception e) {
+				throw new DbException(e.getMessage());
+			}
+		}
+	}
+
+	private static Properties loadProperties() { // ler os dados e guardar nesse arquivo
+		try (FileInputStream fs = new FileInputStream("db.properties")) {
+			Properties props = new Properties();
+			props.load(fs); // o load faz a leitura do arquivo properties apontado pelo inputstream fs
+			return props;
+		} catch (IOException e) { // o IOException trata as duas (file not found e IOException)
+			throw new DbException(e.getMessage());
+		}
+
+	}
+	
+	public static void closeStatement(Statement st) { //metodo para fechar st e rs
+		if(st != null) {
+			try {
+				st.close();	
+			} catch (SQLException e) {
+				throw new DbException(e.getMessage()); //agora vai lançar exceção run time exception
+			}
+		}
+	}
+	
+
+	public static void closeResultSet(ResultSet rs) { //metodo para fechar st e rs
+		if(rs != null) {
+			try {
+				rs.close();	
+			} catch (SQLException e) {
+				throw new DbException(e.getMessage()); //agora vai lançar exceção run time exception
+			}
+		}
+	}
+}

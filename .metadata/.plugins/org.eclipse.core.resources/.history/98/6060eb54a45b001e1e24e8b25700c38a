@@ -1,0 +1,15 @@
+package com.github.model.dao;
+
+import com.github.model.dao.implementation.SellerDaoJDBC;
+
+import db.DB;
+
+public class DaoFactory {
+
+	//TODO: ESSA CLASSE VAI TER OPERAÇÕES ESTÁTIAS PARA INSTANCIAR OS DAOS 
+	//DESSA FORMA MINHA CLASSE VAI EXPOR UM MÉTODO QUE RETORNA UM TIPO DA INTERFACE MAS INTERNAMENTE VAI INSTANCIAR UMA IMPLEMENTAÇÃO
+	//MASSETA PARA DEIXAR SÓ A INTERFACE E NÃO A IMPLEMENTAÇÃO
+	public static SellerDao createSellerDao() {
+		return new SellerDaoJDBC(DB.getConnetion()); 
+	}
+}
